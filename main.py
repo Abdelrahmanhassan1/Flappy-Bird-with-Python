@@ -36,6 +36,7 @@ def draw_pipes(pipes):
             flip_pipe = pygame.transform.flip(pipe_surface, False, True)
             screen.blit(flip_pipe, pipe)
 
+
 # Starting the game
 pygame.init()
 screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
