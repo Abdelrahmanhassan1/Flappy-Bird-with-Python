@@ -6,5 +6,5 @@
 #### This game was recreated using python.
 
 The user only taps on the space button and the bird shouldn't collide with the pipes or both the top and bottom of the screen.<br>
-Score and High Score exist to iterate the user play. 
+Score and High Score exist to iterate the user play. <br>
 Users can change the size of the window by changing the variables WIN_WIDTH, WIN_HEIGHT. Everything is flexible as created with variables not hardcoded.
