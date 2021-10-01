@@ -37,6 +37,14 @@ def draw_pipes(pipes):
             screen.blit(flip_pipe, pipe)
 
 
+def check_collisions(pipes):
+    for pipe in pipes:
+        if bird_rect.colliderect(pipe):
+            return False
+    if bird_rect.top <= -100 or bird_rect.bottom >= (WIN_HEIGHT - BASE_HEIGHT):
+        return False
+    return True
+
 # Starting the game
 pygame.init()
 screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -45,6 +53,7 @@ clock = pygame.time.Clock()
 # Game Variables:
 gravity = 0.15
 bird_movement = 0
+game_active = True
 
 # We need to load the background image
 bg_surface = pygame.image.load('./Assets/background-day.png').convert()
@@ -74,9 +83,17 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            # if player is pressing the space button and the game is still working
+            if event.key == pygame.K_SPACE and game_active:
                 bird_movement = 0
                 bird_movement -= 6
+            # Here the player is trying to play while the game is over:
+            # So we reset every thing clearing the pipe list and resetting the position of the bird
+            if event.key == pygame.K_SPACE and game_active == False:
+                game_active = True
+                pipe_list.clear()
+                bird_rect.center = (50, WIN_HEIGHT//2 + 50)
+                bird_movement = 0
 
         # This is when the user passes a pipe we need to add a new pipe to the screen
         if event.type == SPAWN_PIPE:
@@ -85,14 +102,16 @@ while True:
     # This is for drawing the background image
     screen.blit(bg_surface, (0, 0))
 
+    # The loop of the game
     # Changing the bird position by adding movement to its rectangle
-    bird_movement += gravity
-    bird_rect.centery += bird_movement
-    screen.blit(bird_surface, bird_rect)
-
-    # Moving the pipes:
-    pipe_list = move_pipes(pipe_list)
-    draw_pipes(pipe_list)
+    if game_active:
+        bird_movement += gravity
+        bird_rect.centery += bird_movement
+        screen.blit(bird_surface, bird_rect)
+        game_active = check_collisions(pipe_list)
+        # Moving the pipes:
+        pipe_list = move_pipes(pipe_list)
+        draw_pipes(pipe_list)
 
     # then we need to plot the base surface:
     floor_x_pos -= 1
