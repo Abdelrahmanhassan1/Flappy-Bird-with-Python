@@ -1,6 +1,6 @@
 # Flappy-Bird-with-Python
 ### A game Developed using pygame.
-
+:red_circle: :yellow_circle: :green_circle:
 ![GIF](https://github.com/Abdelrahmanhassan1/My-Assets/blob/master/Flappy%20Bird.gif)
 
 #### This game was recreated using python.
