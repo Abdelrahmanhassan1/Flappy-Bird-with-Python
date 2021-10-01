@@ -129,6 +129,8 @@ pipe_height = [500, 400, 450, 350, 520]
 game_over_surface = pygame.transform.scale2x(pygame.image.load('./Assets/gameover.png').convert_alpha())
 game_over_rect = game_over_surface.get_rect(center=(WIN_WIDTH//2, WIN_HEIGHT // 2 - 50))
 
+flap_sound = pygame.mixer.Sound('./')
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
