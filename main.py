@@ -40,6 +40,7 @@ def draw_pipes(pipes):
 def check_collisions(pipes):
     for pipe in pipes:
         if bird_rect.colliderect(pipe):
+            death_sound.play()
             return False
     if bird_rect.top <= -100 or bird_rect.bottom >= (WIN_HEIGHT - BASE_HEIGHT):
         return False
@@ -67,7 +68,7 @@ def score_display(game_state):
         score_rect = score_surface.get_rect(center=(WIN_WIDTH // 2 - 10, 50))
         screen.blit(score_surface, score_rect)
 
-        high_score_surface = game_font.render('High Score: ' + str(int(score)), True, (255, 255, 255))
+        high_score_surface = game_font.render('High Score: ' + str(int(high_score)), True, (255, 255, 255))
         high_score_rect = high_score_surface.get_rect(center=(WIN_WIDTH // 2 - 10, WIN_HEIGHT // 2 + 50))
         screen.blit(high_score_surface, high_score_rect)
 
@@ -78,8 +79,8 @@ def update_score(game_score, game_high_score):
     return game_high_score
 
 
-
 # Starting the game
+pygame.mixer.pre_init()
 pygame.init()
 screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 clock = pygame.time.Clock()
@@ -129,8 +130,10 @@ pipe_height = [500, 400, 450, 350, 520]
 game_over_surface = pygame.transform.scale2x(pygame.image.load('./Assets/gameover.png').convert_alpha())
 game_over_rect = game_over_surface.get_rect(center=(WIN_WIDTH//2, WIN_HEIGHT // 2 - 50))
 
-flap_sound = pygame.mixer.Sound('./')
-
+flap_sound = pygame.mixer.Sound('./audio/wing.wav')
+death_sound = pygame.mixer.Sound('./audio/hit.wav')
+score_sound = pygame.mixer.Sound('./audio/point.wav')
+score_sound_countdown = 100
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -141,6 +144,8 @@ while True:
             if event.key == pygame.K_SPACE and game_active:
                 bird_movement = 0
                 bird_movement -= 6
+                flap_sound.play()
+
             # Here the player is trying to play while the game is over:
             # So we reset every thing clearing the pipe list and resetting the position of the bird
             if event.key == pygame.K_SPACE and game_active == False:
@@ -176,6 +181,11 @@ while True:
         draw_pipes(pipe_list)
         score += 0.01
         score_display('main')
+        score_sound_countdown -= 1
+        if score_sound_countdown <= 0:
+            score_sound.play()
+            score_sound_countdown = 100
+
     else:
         screen.blit(game_over_surface, game_over_rect)
         high_score = update_score(score, high_score)
