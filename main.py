@@ -57,15 +57,40 @@ def bird_animation():
     return new_bird, new_bird_rect
 
 
+def score_display(game_state):
+    if game_state == 'main':
+        score_surface = game_font.render('Score: ' + str(int(score)), True, (255, 255, 255))
+        score_rect = score_surface.get_rect(center=(WIN_WIDTH//2 - 10, 50))
+        screen.blit(score_surface, score_rect)
+    if game_state == 'game_over':
+        score_surface = game_font.render('Score: ' + str(int(score)), True, (255, 255, 255))
+        score_rect = score_surface.get_rect(center=(WIN_WIDTH // 2 - 10, 50))
+        screen.blit(score_surface, score_rect)
+
+        high_score_surface = game_font.render('High Score: ' + str(int(score)), True, (255, 255, 255))
+        high_score_rect = high_score_surface.get_rect(center=(WIN_WIDTH // 2 - 10, WIN_HEIGHT // 2 + 50))
+        screen.blit(high_score_surface, high_score_rect)
+
+
+def update_score(game_score, game_high_score):
+    if game_score > game_high_score:
+        game_high_score = game_score
+    return game_high_score
+
+
+
 # Starting the game
 pygame.init()
 screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 clock = pygame.time.Clock()
+game_font = pygame.font.SysFont('Arial', 40)
 
 # Game Variables:
 gravity = 0.15
 bird_movement = 0
 game_active = True
+score = 0
+high_score = 0
 
 # We need to load the background image
 bg_surface = pygame.image.load('./Assets/background-day.png').convert()
@@ -101,6 +126,9 @@ SPAWN_PIPE = pygame.USEREVENT
 pygame.time.set_timer(SPAWN_PIPE, millis=1200)
 pipe_height = [500, 400, 450, 350, 520]
 
+game_over_surface = pygame.transform.scale2x(pygame.image.load('./Assets/gameover.png').convert_alpha())
+game_over_rect = game_over_surface.get_rect(center=(WIN_WIDTH//2, WIN_HEIGHT // 2 - 50))
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -118,6 +146,7 @@ while True:
                 pipe_list.clear()
                 bird_rect.center = (50, WIN_HEIGHT//2 + 50)
                 bird_movement = 0
+                score = 0
 
         # This is when the user passes a pipe we need to add a new pipe to the screen
         if event.type == SPAWN_PIPE:
@@ -143,6 +172,12 @@ while True:
         # Moving the pipes:
         pipe_list = move_pipes(pipe_list)
         draw_pipes(pipe_list)
+        score += 0.01
+        score_display('main')
+    else:
+        screen.blit(game_over_surface, game_over_rect)
+        high_score = update_score(score, high_score)
+        score_display('game_over')
 
     # then we need to plot the base surface:
     floor_x_pos -= 1
