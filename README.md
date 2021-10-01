@@ -17,4 +17,3 @@ Users can change the size of the window by changing the variables WIN_WIDTH, WIN
 5. Rotating and Animating the bird to make it like a real bird flapping.<br>
 6. The score and high score rendered.<br>
 7. The game over the window and the sounds.<br>
-The tutorials from Youtube were very helpful and gave me a great experience on the steps to walk through.<br>
